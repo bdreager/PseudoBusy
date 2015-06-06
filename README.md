@@ -20,7 +20,7 @@ sh make
 
 To run:
 ```
-python PseudoBusy
+./PseudoBusy
 ```
 
 ##Issues
