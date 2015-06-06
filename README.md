@@ -13,6 +13,7 @@ python pseudoBusy.py
 ###Build
 You don't have to build PseudoBusy, but it can be nice having a single file to move around.
 
+######Note: This might be dangerous
 To build:
 ```
 sh make
@@ -23,7 +24,7 @@ To run:
 ./PseudoBusy
 ```
 
-##Issues
+###Issues
 - [x] Works on Linux completely
 
 - [ ] Probably works on Windows, but colors are disabled
