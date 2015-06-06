@@ -24,8 +24,8 @@ python PseudoBusy
 ```
 
 ##Issues
-Works on Linux completely
+- [x] Works on Linux completely
 
-Probably works on Windows, but colors are disabled
+- [ ] Probably works on Windows, but colors are disabled
 
-Probably works on OSX, but only looks at files in local directory
+- [ ] Probably works on OSX, but only looks at files in local directory
