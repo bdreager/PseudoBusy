@@ -7,6 +7,7 @@ class PseudoBusy():
     def __init__(self):
         self.rand = randomPlusPlus.RandomPlutPlus()
         self.printer = printer.Printer(self.rand)
+        self.compiled = True
 
     def run(self):
         # TODO search for files on users filesystem
@@ -23,8 +24,10 @@ class PseudoBusy():
             print "\n\n"
 
     def pickFile(self):
-        #dir = os.path.dirname(os.path.abspath(__file__))  # base directory
-        dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        if self.compiled:
+            dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        else:
+            dir = os.path.dirname(os.path.abspath(__file__))  # base directory
 
         if platform.system() is 'darwin':
             return self.rand.choice(dir)  # OSX doesn't like something I'm doing in pickFile, so use this instead
@@ -40,9 +43,10 @@ class PseudoBusy():
 
         return full_file
 
-# #######################
-# #	Driver
-# #####################
-# if __name__ == '__main__':
-#     main = PseudoBusy()
-#     main.run()
+#######################
+#	Driver
+#####################
+if __name__ == '__main__':
+    main = PseudoBusy()
+    main.compiled = False
+    main.run()
