@@ -3,7 +3,7 @@ MAIN=__main__.py
 if [ -f $APP ] || [ -d $APP ] 
 then
 	echo "$APP already exists. Stopping."
-	exit
+	exit 1
 fi
 mkdir $APP
 cp *.py $APP
@@ -17,5 +17,6 @@ zip -r ../$APP *
 cd ..
 rm -rf $APP
 mv $APP.zip $APP
-echo '#!/usr/bin/env python\n' | cat - $APP > $APP.temp && mv $APP.temp $APP
+echo '#!/usr/bin/env python' | cat - $APP > $APP.temp && mv $APP.temp $APP
 chmod +x $APP
+echo "$APP done."

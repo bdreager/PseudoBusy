@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os, platform, random
+import os, string, platform, random
 
 class RandomPlutPlus(random.Random):
     def __init__(self):
@@ -47,3 +47,6 @@ class RandomPlutPlus(random.Random):
 
     def int(self, min, max):
         return self.randint(min, max)
+
+    def string(self, length):
+        return ''.join(self.choice(string.digits + string.ascii_letters) for i in range(length))

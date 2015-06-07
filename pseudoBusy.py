@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os, platform, printer, randomPlusPlus
+import os, string, platform, printer, randomPlusPlus
 
 class PseudoBusy():
     def __init__(self):
@@ -18,8 +18,15 @@ class PseudoBusy():
 
             with open(infile, "r") as ins:
                 for line in ins:
+                    if self.rand.int(0, 10):
+                        num = self.rand.int(10, 25)
+                        self.printer.typing(self.rand.string(num))
+                        if num <= len(line):
+                            self.printer.backspace(num)
+                        else:
+                            self.printer.backspace_delete(num)
+
                     self.printer.typing(line)
-                    # TODO fake errors when typing, backspace over error, retype
 
             print "\n\n"
 
@@ -30,7 +37,7 @@ class PseudoBusy():
             dir = os.path.dirname(os.path.abspath(__file__))  # base directory
 
         if platform.system() is 'darwin':
-            return self.rand.choice(dir)  # OSX doesn't like something I'm doing in pickFile, so use this instead
+            return self.rand.choice(dir)  # OSX doesn't like something I'm doing in rand.file, so use this instead
         else:
             full_file = None
         while full_file is None:

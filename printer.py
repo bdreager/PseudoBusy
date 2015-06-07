@@ -19,7 +19,7 @@ class ACTION:
 class Printer():
     MAX_TYPE_SPEED = 0.5
     MIN_TYPE_SPEED = 0.005
-    TYPE_SPEED_CHANGE_AMT = 0.001
+    TYPE_SPEED_CHANGE_AMT = 0.005
     TYPE_SPEED_DEFAULT = 0.05
 
     def __init__(self, newRand):
@@ -46,19 +46,34 @@ class Printer():
             sys.stdout.write('%s%s' % (color, char))
             sys.stdout.flush()
 
-           # if not self.rand.int(0, 5):
-               # self.accelerate_typing(self.rand.int(0, 1))
-            if not self.rand.int(0, 1000):
-                self.type_speed = self.MAX_TYPE_SPEED if self.rand.int(0, 1) else self.MIN_TYPE_SPEED
-            else:
-                self.accelerate_typing(self.rand.int(0, 1))
+            self.typing_change()
 
+            time.sleep(self.type_speed)
+
+    def backspace(self, length):
+        for _ in range(length):
+            sys.stdout.write('\b')
+            sys.stdout.flush()
+            self.typing_change()
+            time.sleep(self.type_speed)
+
+    def backspace_delete(self, length):
+           for _ in range(length):
+            sys.stdout.write('\b \b')
+            sys.stdout.flush()
+            self.typing_change()
             time.sleep(self.type_speed)
 
     def pick_color(self):
         new_color = self.rand.unique_ANSI_color(self.color_list)
         self.color_list.append(new_color)
         return new_color
+
+    def typing_change(self):
+        if not self.rand.int(0, 1000):
+            self.type_speed = self.MAX_TYPE_SPEED if self.rand.int(0, 1) else self.MIN_TYPE_SPEED
+        else:
+            self.accelerate_typing(self.rand.int(0, 1))
 
     def accelerate_typing(self, roll):
         if roll:
