@@ -1,52 +1,55 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os, string, platform, printer, randomPlusPlus
+import os, platform, printer, randomPlusPlus
 
 class PseudoBusy():
-    def __init__(self):
+    def __init__(self, packaged=False):
         self.rand = randomPlusPlus.RandomPlutPlus()
         self.printer = printer.Printer(self.rand)
-        self.compiled = True
+        if packaged:
+            self.dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) #since we're in a zip file, we have to move one level up
+        else:
+            self.dir = os.path.dirname(os.path.abspath(__file__))  #local directory
+
+        slash = '\\' if platform.system() is 'Windows' else '/' #this needs to be tested on windows
+        depth = self.dir.count(slash)-2 #remove the -2 to start in /  but permission will be a problem then
+        self.home = self.dir +''.join("/.." * depth)+"/"
 
     def run(self):
-        # TODO search for files on users filesystem
-        # TODO use whitelist for selecting (txt, sh, py, rb, c, cpp, h, js, html, etc.)
+        # TODO search for files deeper on users filesystem
+        # TODO use whitelist for selecting (txt, sh, py, rb, c, cpp, h, js, html, css, etc.)
         while True:  # TODO make a stop case
             self.printer.reset()
-            infile = self.pickFile();
-
+            infile = self.pick_file()
+            self.printer.typing("Reading: "+infile+"\n\n")
             with open(infile, "r") as ins:
                 for line in ins:
-                    if self.rand.int(0, 10):
+                    if not self.rand.int(0, 10):    #types a random string as a 'mistake'
                         num = self.rand.int(10, 25)
                         self.printer.typing(self.rand.string(num))
-                        if num <= len(line):
-                            self.printer.backspace(num)
-                        else:
-                            self.printer.backspace_delete(num)
+                        #if num < len(line)/2:
+                        #    self.printer.backspace(num)
+                        #else:
+                        self.printer.backspace_delete(num)
 
                     self.printer.typing(line)
 
             print "\n\n"
 
-    def pickFile(self):
-        if self.compiled:
-            dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        else:
-            dir = os.path.dirname(os.path.abspath(__file__))  # base directory
-
+    def pick_file(self):
         if platform.system() is 'darwin':
-            return self.rand.choice(dir)  # OSX doesn't like something I'm doing in rand.file, so use this instead
+            return self.rand.choice(dir)  # OSX doesn't like something I'm doing in pick_file, so use this instead
         else:
             full_file = None
+            
         while full_file is None:
-            dirs = [d for d in os.listdir(dir) if os.path.isdir(os.path.join(dir, d))]
+            dirs = [d for d in os.listdir(self.home) if os.path.isdir(os.path.join(self.home, d))]
             if len(dirs):
-                newDir = self.rand.choice(dirs)
-                file = self.rand.file(newDir)
+                full_dir = self.home+self.rand.choice(dirs)
+                file = self.rand.file(full_dir)
                 if not file is None:
-                    full_file = dir + "/" + newDir + "/" + file
+                    full_file = full_dir + "/" + file
 
         return full_file
 
@@ -54,6 +57,4 @@ class PseudoBusy():
 #	Driver
 #####################
 if __name__ == '__main__':
-    main = PseudoBusy()
-    main.compiled = False
-    main.run()
+    PseudoBusy().run()
