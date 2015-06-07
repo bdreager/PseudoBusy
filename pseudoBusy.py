@@ -39,10 +39,10 @@ class PseudoBusy():
 
     def pick_file(self):
         if platform.system() is 'darwin':
-            return self.rand.choice(dir)  # OSX doesn't like something I'm doing in pick_file, so use this instead
+            return self.rand.choice(self.dir)  # OSX doesn't like something I'm doing in pick_file, so use this instead
         else:
             full_file = None
-            
+
         while full_file is None:
             dirs = [d for d in os.listdir(self.home) if os.path.isdir(os.path.join(self.home, d))]
             if len(dirs):
