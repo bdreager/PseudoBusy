@@ -10,11 +10,10 @@ fi
 mkdir $APP
 cp *.py $APP
 cd $APP
+touch $MAIN
+printf 'import pseudoBusy\nif __name__ == "__main__":\n    pseudoBusy.PseudoBusy(packaged=True).run()' >> $MAIN
 python -m compileall .
 rm *.py
-touch $MAIN
-> $MAIN
-printf '#!/usr/bin/env python\nimport pseudoBusy\nif __name__ == "__main__":\n    main=pseudoBusy.PseudoBusy()\n    main.run()' >> $MAIN
 zip -r ../$APP *
 cd ..
 rm -rf $APP
