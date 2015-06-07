@@ -1,3 +1,5 @@
+#!/bin/bash
+
 APP=PseudoBusy
 MAIN=__main__.py
 if [ -f $APP ] || [ -d $APP ] 
