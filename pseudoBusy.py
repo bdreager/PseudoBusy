@@ -16,12 +16,18 @@ class PseudoBusy():
         depth = self.dir.count(slash)-2 #remove the -2 to start in /  but permission will be a problem then
         self.home = self.dir +''.join("/.." * depth)+"/"
 
+        # TODO use whitelist for selecting (txt, sh, py, rb, c, cpp, h, js, html, css, xml, etc.)
+        #self.whitelist = [".txt", ".sh", ".py", ".rb", ".c", ".cpp", ".h", ".js", ".html", ".css", ".xml", ".ini", ".md", ".in", ".url"]
+
     def run(self):
         # TODO search for files deeper on users filesystem
-        # TODO use whitelist for selecting (txt, sh, py, rb, c, cpp, h, js, html, css, etc.)
         while True:  # TODO make a stop case
             self.printer.reset()
-            infile = self.pick_file()
+            infile = None
+            while not infile:
+                infile = self.recurse_pick_file(self.home[:-1])#NOTE the [:-1 is just for testing to remove the end "/"]
+
+            #infile = self.loop_pick_file()
             self.printer.typing("Reading: "+infile+"\n\n")
             with open(infile, "r") as ins:
                 for line in ins:
@@ -37,7 +43,7 @@ class PseudoBusy():
 
             print "\n\n"
 
-    def pick_file(self):
+    def loop_pick_file(self):
         if platform.system() is 'darwin':
             return self.rand.choice(self.dir)  # OSX doesn't like something I'm doing in pick_file, so use this instead
         else:
@@ -52,6 +58,25 @@ class PseudoBusy():
                     full_file = full_dir + "/" + file
 
         return full_file
+
+    def recurse_pick_file(self, dir):
+        file = None
+        if self.rand.int(0, 10):
+            new_dir = self.rand.dir(dir)
+            try:
+                file = self.recurse_pick_file(dir+"/"+new_dir) if new_dir else None
+            except:
+                pass
+        if not file:
+            new_file = self.rand.file(dir)
+            file = dir + "/" + new_file if new_file else None
+        if file:
+            if not os.access(file, os.R_OK):
+                file = None
+            #elif not os.path.splitext(file) in self.whitelist:
+            #    file = None
+
+        return file
 
 #######################
 #	Driver
