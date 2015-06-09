@@ -17,7 +17,7 @@ class PseudoBusy():
         self.home = self.dir +''.join("/.." * depth)+"/"
 
         # TODO use whitelist for selecting (txt, sh, py, rb, c, cpp, h, js, html, css, xml, etc.)
-        #self.whitelist = [".txt", ".sh", ".py", ".rb", ".c", ".cpp", ".h", ".js", ".html", ".css", ".xml", ".ini", ".md", ".in", ".url"]
+        #self.whitelist = [".txt", ".sh", ".py", ".rb", ".c", ".cpp", ".h", ".js", ".html", ".css", ".xml", ".ini", ".md", ".in", ".url", ".json", ".csv"]
 
     def run(self):
         # TODO search for files deeper on users filesystem
