@@ -37,7 +37,7 @@ class RandomPlusPlus(random.Random):
 
             return selection
         else:
-            return self.ANSI_color()
+            return self.ansi_color()
 
     def int(self, min_index, max_index):
         return self.randint(min_index, max_index)
