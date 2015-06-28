@@ -1,52 +1,46 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os, string, platform, random
+import os, string, random
 
-class RandomPlutPlus(random.Random):
+class RandomPlusPlus(random.Random):
     def __init__(self):
         random.Random.__init__(self)
 
-    def file(self, dir):
-        return self.safe_choice([f for f in os.listdir(dir) if os.path.isfile(os.path.join(dir, f))])
+    def file(self, directory):
+        return self.safe_choice([f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))])
 
-    def dir(self, dir):
-        return self.safe_choice([d for d in os.listdir(dir) if os.path.isdir(os.path.join(dir, d))])
+    def dir(self, directory):
+        return self.safe_choice([d for d in os.listdir(directory) if os.path.isdir(os.path.join(directory, d))])
 
-    def safe_choice(self, list):
-        if not len(list):
+    def safe_choice(self, color_list):
+        if not len(color_list):
             return None
-        return self.choice(list)
+        return self.choice(color_list)
 
-    def ANSI_color(self):
-         if not platform.system() is 'Windows':
-            return '\033[9' + str(self.randint(0, 8)) + 'm'  # in the range \003[90m - \003[98m
-         else:
-            return ''  # don't work on windows, so don't bother
+    def ansi_color(self):
+        return '\033[9' + str(self.randint(0, 8)) + 'm'  # in the range \003[90m - \003[98m
 
-    def ANSI_annotation(self):  #this has a high chance of being butt ugly
-         if not platform.system() is 'Windows':
-            return '\033[' + str(self.randint(10, 99)) + 'm'  # in the range \003[10m - \003[99m
-         else:
-            return ''  # don't work on windows, so don't bother
+    def ansi_annotation(self):  # this has a high chance of being butt ugly
+        return '\033[' + str(self.randint(10, 99)) + 'm'  # in the range \003[10m - \003[99m
 
-    def unique_ANSI_color(self, list):
-        length = len(list)
+    def unique_ansi_color(self, color_list):
+        length = len(color_list)
         if length:
-            function = self.ANSI_color
-            if length == 8: #ran out of colors, just find something to return
-                function = self.ANSI_annotation
+            function = self.ansi_color
+            if length == 8:  # ran out of colors, just find something to return
+                function = self.ansi_annotation
 
             selection = function()
-            while any(selection in s for s in list):
+            while any(selection in s for s in color_list):
                 selection = function()
 
             return selection
         else:
             return self.ANSI_color()
 
-    def int(self, min, max):
-        return self.randint(min, max)
+    def int(self, min_index, max_index):
+        return self.randint(min_index, max_index)
 
     def string(self, length):
         return ''.join(self.choice(string.digits + string.ascii_letters) for i in range(length))

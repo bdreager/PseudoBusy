@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import sys, time
+import sys, time, platform
 
 class TYPE:
     UNDEFINED = 0
@@ -17,13 +17,13 @@ class ACTION:
     RANDOM = 2
 
 class Printer():
-    MAX_TYPE_SPEED = 0.5
-    MIN_TYPE_SPEED = 0.005
+    MAX_TYPE_SPEED = 1.0
+    MIN_TYPE_SPEED = 0.01
     TYPE_SPEED_CHANGE_AMT = 0.005
     TYPE_SPEED_DEFAULT = 0.05
 
-    def __init__(self, newRand):
-        self.rand = newRand
+    def __init__(self, new_rand):
+        self.rand = new_rand
         self.reset()
 
     def reset(self):
@@ -65,7 +65,10 @@ class Printer():
             time.sleep(self.type_speed)
 
     def pick_color(self):
-        new_color = self.rand.unique_ANSI_color(self.color_list)
+        new_color = ''
+        if not platform.system() is 'Windows':  # don't work on windows, so don't bother
+            new_color = self.rand.unique_ansi_color(self.color_list)
+
         self.color_list.append(new_color)
         return new_color
 
@@ -86,28 +89,28 @@ class Printer():
                 self.type_speed = self.MIN_TYPE_SPEED
 
     def determine_color(self, char):
-        type = self.determine_type(char)
+        char_type = self.determine_type(char)
 
         if self.action == ACTION.RANDOM:
-            if type == TYPE.ALPHA:
+            if char_type == TYPE.ALPHA:
                 return self.random_color
             else:
                 self.action = ACTION.DEFAULT
-                #return self.main_color
+                # return self.main_color
         if self.action == ACTION.QUOTE:
-            if type == TYPE.QUOTE:
+            if char_type == TYPE.QUOTE:
                 self.action = ACTION.DEFAULT
             return self.quote_color
-        elif type == TYPE.QUOTE:
+        elif char_type == TYPE.QUOTE:
             self.action = ACTION.QUOTE
             return self.quote_color
-        elif type == TYPE.ALPHA:
+        elif char_type == TYPE.ALPHA:
             return self.alpha_color
-        elif type == TYPE.DIGIT:
+        elif char_type == TYPE.DIGIT:
             return self.digit_color
-        elif type == TYPE.MATH:
+        elif char_type == TYPE.MATH:
             return self.math_color
-        elif type == TYPE.SPECIAL:
+        elif char_type == TYPE.SPECIAL:
             return self.special_color
         elif self.action == ACTION.DEFAULT:
             if char == " " and not self.rand.int(0, 10):
@@ -115,8 +118,9 @@ class Printer():
                 return self.random_color
             return self.main_color
 
-    def determine_type(self, char):
-        # TODO Detect currly brackets,
+    @staticmethod
+    def determine_type(char):
+        # TODO Detect curly brackets,
         if char.isalpha() or char == "-" or char == "_":
             return TYPE.ALPHA
         elif char == '\'' or char == '\"':

@@ -27,6 +27,6 @@ To run:
 ###Issues
 - [x] Works on Linux completely
 
-- [ ] Probably works on Windows, but colors are disabled
+- [x] Works on Windows, but ANSI colors are disabled and make won't work, of course
 
 - [ ] Probably works on OSX, but only looks at files in local directory
