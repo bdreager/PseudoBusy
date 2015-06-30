@@ -29,7 +29,7 @@ class PseudoBusy():
                 try:
                     infile = self.recurse_pick_file(self.home[:-1])  # NOTE the [:-1 is just for testing to remove the end "/"]
                     with open(infile, 'r') as ins: ins.readline().decode('ascii')  # for catching junk we don't care to see
-                except UnicodeDecodeError:
+                except:
                     print self.message()
                     pass
 
