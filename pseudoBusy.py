@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os, platform, printer, randomPlusPlus
+import os, platform, random, printer, randomPlusPlus
 
 class PseudoBusy():
     MAX_PATIENCE = 6
@@ -11,15 +11,14 @@ class PseudoBusy():
         self.printer = printer.Printer(self.rand)
         if packaged:
             self.dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # since we're in a zip file, we have to move one level up
+            self.message = Response.generic
         else:
             self.dir = os.path.dirname(os.path.abspath(__file__))  # local directory
+            self.message = Response.random
 
         self.slash = '\\' if platform.system() is 'Windows' else '/'  # this needs to be tested on windows
-        depth = self.dir.count(self.slash)-2 # remove the -2 to start in /  but permission will be a problem then
+        depth = self.dir.count(self.slash)-2  # remove the -2 to start in /  but permission will be a problem then
         self.home = self.dir + ''.join((self.slash + "..") * depth)+self.slash
-
-        # TODO use whitelist for selecting (txt, sh, py, rb, c, cpp, h, js, html, css, xml, etc.)
-        # self.whitelist = [".txt", ".sh", ".py", ".rb", ".c", ".cpp", ".h", ".js", ".html", ".css", ".xml", ".ini", ".md", ".in", ".url", ".json", ".csv"]
 
     def run(self):
         # TODO search for files deeper on users filesystem
@@ -31,7 +30,7 @@ class PseudoBusy():
                     infile = self.recurse_pick_file(self.home[:-1])  # NOTE the [:-1 is just for testing to remove the end "/"]
                     with open(infile, 'r') as ins: ins.readline().decode('ascii')  # for catching junk we don't care to see
                 except UnicodeDecodeError:
-                    print 'Nope'
+                    print self.message()
                     pass
 
             # infile = self.loop_pick_file()
@@ -46,7 +45,7 @@ class PseudoBusy():
                         else:
                             patience -= 1
                             if patience <= 0:
-                                print 'done with this'
+                                print self.message()
                                 break;
                         if not self.rand.int(0, 10):  # type a random string as a 'mistake'
                             num = self.rand.int(10, 25)
@@ -55,6 +54,7 @@ class PseudoBusy():
                         self.printer.typing(line)
 
             except:  # mainly for permission denied on windows
+                print self.message()
                 pass
 
     def loop_pick_file(self):
@@ -91,6 +91,21 @@ class PseudoBusy():
             #    file = None
 
         return found_file
+
+# simple, static, random response generator
+class Response:
+    Errors = []
+    with open("errors.txt", "r") as ins:
+        for line in ins:
+            Errors.append(line)
+
+    @classmethod
+    def random(cls):
+        return "Error: "+cls.Errors[random.randint(0, len(cls.Errors))]
+
+    @staticmethod
+    def generic():
+        return "Error"
 
 #######################
 #	Driver
