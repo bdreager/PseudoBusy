@@ -4,6 +4,8 @@
 import os, platform, printer, randomPlusPlus
 
 class PseudoBusy():
+    MAX_PATIENCE = 6
+
     def __init__(self, packaged=False):
         self.rand = randomPlusPlus.RandomPlusPlus()
         self.printer = printer.Printer(self.rand)
@@ -25,26 +27,35 @@ class PseudoBusy():
             self.printer.reset()
             infile = None
             while not infile:
-                infile = self.recurse_pick_file(self.home[:-1])  # NOTE the [:-1 is just for testing to remove the end "/"]
+                try:
+                    infile = self.recurse_pick_file(self.home[:-1])  # NOTE the [:-1 is just for testing to remove the end "/"]
+                    with open(infile, 'r') as ins: ins.readline().decode('ascii')  # for catching junk we don't care to see
+                except UnicodeDecodeError:
+                    print 'Nope'
+                    pass
 
             # infile = self.loop_pick_file()
-            self.printer.typing("Reading: "+infile+"\n\n")
-            try:    # mainly for permission denied on windows
+            self.printer.typing("\nReading: "+infile+"\n")
+            try:
                 with open(infile, "r") as ins:
+                    patience = self.MAX_PATIENCE
                     for line in ins:
-                        if not self.rand.int(0, 10):    # types a random string as a 'mistake'
+                        line = line.decode('ascii')  # for catching junk we don't care to see
+                        if line.strip():
+                            patience = self.MAX_PATIENCE
+                        else:
+                            patience -= 1
+                            if patience <= 0:
+                                print 'done with this'
+                                break;
+                        if not self.rand.int(0, 10):  # type a random string as a 'mistake'
                             num = self.rand.int(10, 25)
                             self.printer.typing(self.rand.string(num))
-                            # if num < len(line)/2:
-                            #    self.printer.backspace(num)
-                            # else:
                             self.printer.backspace_delete(num)
-
                         self.printer.typing(line)
-            except:
-                pass
 
-            print "\n\n"
+            except:  # mainly for permission denied on windows
+                pass
 
     def loop_pick_file(self):
         if platform.system() is 'darwin':
