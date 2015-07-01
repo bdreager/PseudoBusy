@@ -1,9 +1,10 @@
 # PseudoBusy
 
 ###What
-PreusoBusy is a script to make your terminal look busy.
-It finds random files on your computer and prints them out letter by letter, with varying speed and IDA-like highlighting.
+PseudoBusy is a script to make your terminal look busy.
+It recursively finds random interesting files on your computer and prints them out letter by letter, with varying speed, IDE-like highlighting, and random mistakes.
 
+Works nicely as a noninvasive, nonintensive, screen saver.
 
 ###Run
 ```
@@ -25,8 +26,11 @@ To run:
 ```
 
 ###Issues
+
+######No major issues at the moment; all platforms have as much functionality as they can
+
 - [x] Works on Linux completely
 
 - [x] Works on Windows, but ANSI colors are disabled and make won't work, of course
 
-- [ ] Probably works on OSX, but only looks at files in local directory
+- [x] Works on OSX, seemingly with full functionality
