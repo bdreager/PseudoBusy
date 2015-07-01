@@ -101,7 +101,7 @@ class Response:
 
     @classmethod
     def random(cls):
-        return "Error: "+cls.Errors[random.randint(0, len(cls.Errors))]
+        return "Error: "+cls.Errors[random.randint(0, len(cls.Errors)-1)]
 
     @staticmethod
     def generic():
