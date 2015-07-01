@@ -27,7 +27,7 @@ To run:
 
 ###Issues
 
-######No major issues at the moment; all platforms have as much functionality as they can
+######No major issues at the moment; all platforms have as much functionality as they support
 
 - [x] Works on Linux completely
 
