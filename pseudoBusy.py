@@ -25,16 +25,20 @@ class PseudoBusy():
         while True:  # TODO make a stop case
             self.printer.reset()
             infile = None
+            num_lines = 0
             while not infile:
                 try:
                     infile = self.recurse_pick_file(self.home[:-1])  # NOTE the [:-1 is just for testing to remove the end "/"]
                     with open(infile, 'r') as ins: ins.readline().decode('ascii')  # for catching junk we don't care to see
+                    num_lines = self.bufcount(infile)
+                    if num_lines > 1: raise    # for empty and single line files
                 except:
                     self.printer.typing(self.message())
                     pass
 
             # infile = self.loop_pick_file()
             self.printer.typing("Reading: "+infile+"\n")
+            self.printer.typing("Lines: "+str(num_lines)+"\n")
             try:
                 with open(infile, "r") as ins:
                     patience = self.MAX_PATIENCE
@@ -91,6 +95,20 @@ class PseudoBusy():
             #    file = None
 
         return found_file
+
+    @staticmethod
+    def bufcount(filename):
+        f = open(filename)
+        lines = 0
+        buf_size = 1024 * 1024
+        read_f = f.read
+
+        buf = read_f(buf_size)
+        while buf:
+            lines += buf.count('\n')
+            buf = read_f(buf_size)
+
+        return lines
 
 # simple, static, random response generator
 class Response:
