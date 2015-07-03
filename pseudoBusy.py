@@ -30,11 +30,11 @@ class PseudoBusy():
                     infile = self.recurse_pick_file(self.home[:-1])  # NOTE the [:-1 is just for testing to remove the end "/"]
                     with open(infile, 'r') as ins: ins.readline().decode('ascii')  # for catching junk we don't care to see
                 except:
-                    print self.message()
+                    self.printer.typing(self.message())
                     pass
 
             # infile = self.loop_pick_file()
-            self.printer.typing("\nReading: "+infile+"\n")
+            self.printer.typing("Reading: "+infile+"\n")
             try:
                 with open(infile, "r") as ins:
                     patience = self.MAX_PATIENCE
@@ -45,7 +45,7 @@ class PseudoBusy():
                         else:
                             patience -= 1
                             if patience <= 0:
-                                print self.message()
+                                self.printer.typing(self.message())
                                 break;
                         if not self.rand.int(0, 10):  # type a random string as a 'mistake'
                             num = self.rand.int(10, 25)
@@ -54,7 +54,7 @@ class PseudoBusy():
                         self.printer.typing(line)
 
             except:  # mainly for permission denied on windows
-                print self.message()
+                self.printer.typing(self.message())
                 pass
 
     def loop_pick_file(self):
