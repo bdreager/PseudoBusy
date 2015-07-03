@@ -17,8 +17,8 @@ class ACTION:
     RANDOM = 2
 
 class Printer():
-    MAX_TYPE_SPEED = 1.0
-    MIN_TYPE_SPEED = 0.01
+    MAX_TYPE_SPEED = 0.1
+    MIN_TYPE_SPEED = 0.001
     TYPE_SPEED_CHANGE_AMT = 0.005
     TYPE_SPEED_DEFAULT = 0.05
 
@@ -123,7 +123,7 @@ class Printer():
         # TODO Detect curly brackets,
         if char.isalpha() or char == "-" or char == "_":
             return TYPE.ALPHA
-        elif char == '\'' or char == '\"':
+        elif char == '\"': # or char == '\'': //can't use single quote until I can detect apostrophe
             return TYPE.QUOTE
         elif char.isdigit():
             return TYPE.DIGIT
