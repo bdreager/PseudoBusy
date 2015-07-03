@@ -31,10 +31,10 @@ class PseudoBusy():
                     infile = self.recurse_pick_file(self.home[:-1])  # NOTE the [:-1 is just for testing to remove the end "/"]
                     with open(infile, 'r') as ins: ins.readline().decode('ascii')  # for catching junk we don't care to see
                     num_lines = self.bufcount(infile)
-                    if num_lines > 1: raise    # for empty and single line files
+                    if num_lines <= 1: raise Exception('File too small')    # for empty and single line files
                 except:
                     self.printer.typing(self.message())
-                    pass
+                    infile = None
 
             # infile = self.loop_pick_file()
             self.printer.typing("Reading: "+infile+"\n")
@@ -59,7 +59,6 @@ class PseudoBusy():
 
             except:  # mainly for permission denied on windows
                 self.printer.typing(self.message())
-                pass
 
     def loop_pick_file(self):
         if platform.system() is 'darwin':
