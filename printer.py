@@ -16,19 +16,31 @@ class ACTION:
     QUOTE = 1
     RANDOM = 2
 
-class Printer():
-    MAX_TYPE_SPEED = 100 # measured in letters per second
-    MIN_TYPE_SPEED = 10  # 100 wpm converted to lps
+class Printer(object):
+    MAX_TYPE_SPEED = 100 # measured in letters per second ~1200wpm -> 100lps
+    MIN_TYPE_SPEED = 10  # 120wpm converted to lps
     TYPE_SPEED_CHANGE_AMT = 0.5
     TYPE_SPEED_DEFAULT = 10
 
     def __init__(self, new_rand):
         self.rand = new_rand
+        self._type_speed = None
+        self.type_delay = None
         self.reset()
 
+    @property
+    def type_speed(self): return self._type_speed
+    @type_speed.setter
+    def type_speed(self, value):
+        self._type_speed = value
+
+        if self._type_speed > self.MAX_TYPE_SPEED: self._type_speed = self.MAX_TYPE_SPEED
+        elif self._type_speed < self.MIN_TYPE_SPEED: self._type_speed = self.MIN_TYPE_SPEED
+
+        self.type_delay = ((60.0/self.type_speed)/60.0)
+
     def reset(self):
-        self.type_speed = self.TYPE_SPEED_DEFAULT # TODO make a setter for type_speed that sets type_wait
-        self.type_wait = ((60.0/self.type_speed)/60.0)
+        self.type_speed = self.TYPE_SPEED_DEFAULT
         self.action = ACTION.DEFAULT
 
         self.color_list = []
@@ -49,21 +61,21 @@ class Printer():
 
             self.typing_change()
 
-            time.sleep(self.type_wait)
+            time.sleep(self.type_delay)
 
     def backspace(self, length):
         for _ in range(length):
             sys.stdout.write('\b')
             sys.stdout.flush()
             self.typing_change()
-            time.sleep(self.type_wait)
+            time.sleep(self.type_delay)
 
     def backspace_delete(self, length):
            for _ in range(length):
             sys.stdout.write('\b \b')
             sys.stdout.flush()
             self.typing_change()
-            time.sleep(self.type_wait)
+            time.sleep(self.type_delay)
 
     def pick_color(self):
         new_color = ''
@@ -78,17 +90,12 @@ class Printer():
             self.type_speed = self.MAX_TYPE_SPEED if self.rand.int(0, 1) else self.MIN_TYPE_SPEED
         else:
             self.accelerate_typing(self.rand.int(0, 1))
-        self.type_wait = ((60.0/self.type_speed)/60.0)    
 
     def accelerate_typing(self, roll):
         if roll:
             self.type_speed += self.TYPE_SPEED_CHANGE_AMT
-            if self.type_speed > self.MAX_TYPE_SPEED:
-                self.type_speed = self.MAX_TYPE_SPEED
         else:
             self.type_speed -= self.TYPE_SPEED_CHANGE_AMT
-            if self.type_speed < self.MIN_TYPE_SPEED:
-                self.type_speed = self.MIN_TYPE_SPEED
 
     def determine_color(self, char):
         char_type = self.determine_type(char)
