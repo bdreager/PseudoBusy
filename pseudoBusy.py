@@ -5,6 +5,8 @@ import os, platform, random, printer, randomPlusPlus
 
 class PseudoBusy():
     MAX_PATIENCE = 6
+    LENGTH_MIN = 1
+    LENGTH_MAX = 5000
 
     def __init__(self, packaged=False):
         self.rand = randomPlusPlus.RandomPlusPlus()
@@ -26,39 +28,46 @@ class PseudoBusy():
             self.printer.reset()
             infile = None
             num_lines = 0
+            # TODO search in a background thread. Maintain small backlog (10?) of files to print
             while not infile:
                 try:
-                    infile = self.recurse_pick_file(self.home[:-1])  # NOTE the [:-1 is just for testing to remove the end "/"]
+                    infile = self.recurse_pick_file(self.home[:-1])  # NOTE the [:-1] is just for testing to remove the end "/"
                     with open(infile, 'r') as ins: ins.readline().decode('ascii')  # for catching junk we don't care to see
                     num_lines = self.bufcount(infile)
-                    if num_lines <= 1: raise Exception('File too small')    # for empty and single line files
-                except:
-                    self.printer.typing(self.message())
+                    if num_lines <= self.LENGTH_MIN: raise Exception('File too small') # for empty and single line files
+                    if num_lines >= self.LENGTH_MAX: raise Exception('File too large') # for massive files (probably not code)
+                except Exception, err:
+                    self.printer.override_speed = 1000
+                    self.printer.typing(str(err) + '\n')
+                    #self.printer.typing(self.message())
+                    self.printer.override_speed = 0
                     infile = None
 
-            # infile = self.loop_pick_file()
             self.printer.typing("Reading: "+infile+"\n")
             self.printer.typing("Lines: "+str(num_lines)+"\n")
-            try:
-                with open(infile, "r") as ins:
-                    patience = self.MAX_PATIENCE
-                    for line in ins:
-                        line = line.decode('ascii')  # for catching junk we don't care to see
-                        if line.strip():
-                            patience = self.MAX_PATIENCE
-                        else:
-                            patience -= 1
-                            if patience <= 0:
-                                self.printer.typing(self.message())
-                                break;
-                        if not self.rand.int(0, 10):  # type a random string as a 'mistake'
-                            num = self.rand.int(10, 25)
-                            self.printer.typing(self.rand.string(num))
-                            self.printer.backspace_delete(num)
-                        self.printer.typing(line)
+            self.print_file(infile)
 
-            except:  # mainly for permission denied on windows
-                self.printer.typing(self.message())
+    def print_file(self, infile):
+        try:
+            with open(infile, "r") as ins:
+                patience = self.MAX_PATIENCE
+                for line in ins:
+                    line = line.decode('ascii')  # for catching junk we don't care to see
+                    if line.strip():
+                        patience = self.MAX_PATIENCE
+                    else:
+                        patience -= 1
+                        if patience <= 0:
+                            self.printer.typing(self.message())
+                            break;
+                    if not self.rand.int(0, 10):  # type a random string as a 'mistake'
+                        num = self.rand.int(10, 25)
+                        self.printer.typing(self.rand.string(num))
+                        self.printer.backspace_delete(num)
+                    self.printer.typing(line)
+
+        except:  # mainly for permission denied on windows
+            self.printer.typing(self.message())
 
     def loop_pick_file(self):
         if platform.system() is 'darwin':
