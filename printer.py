@@ -26,6 +26,7 @@ class Printer(object):
         self.rand = new_rand
         self._type_speed = None
         self.type_delay = None
+        self.override_speed = 0
         self.reset()
 
     @property
@@ -37,9 +38,13 @@ class Printer(object):
         if self._type_speed > self.MAX_TYPE_SPEED: self._type_speed = self.MAX_TYPE_SPEED
         elif self._type_speed < self.MIN_TYPE_SPEED: self._type_speed = self.MIN_TYPE_SPEED
 
+        if self.override_speed is not 0:
+            self._type_speed += self.override_speed
+
         self.type_delay = ((60.0/self.type_speed)/60.0)
 
     def reset(self):
+        self.override_speed = 0
         self.type_speed = self.TYPE_SPEED_DEFAULT
         self.action = ACTION.DEFAULT
 
