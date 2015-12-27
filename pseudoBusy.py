@@ -10,7 +10,7 @@ class PseudoBusy():
 
     def __init__(self, packaged=False):
         self.rand = randomPlusPlus.RandomPlusPlus()
-        self.printer = printer.Printer(self.rand)
+        self.printer = printer.Printer(self.rand, shift_in_chance=25)
         if packaged:
             self.dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # since we're in a zip file, we have to move one level up
             self.message = Response.generic

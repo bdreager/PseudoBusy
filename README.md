@@ -24,6 +24,8 @@ To run:
 ```
 ./PseudoBusy
 ```
+###Extras
+If running in a tmux session, there is a 25% chance each time a file is read that an alternate character set will be used.
 
 ###Issues
 

@@ -22,11 +22,19 @@ class Printer(object):
     TYPE_SPEED_CHANGE_AMT = 0.5
     TYPE_SPEED_DEFAULT = 10
 
-    def __init__(self, new_rand):
+    SHIFT_IN = "\016"
+    SHIFT_OUT = "\017"
+
+    def __init__(self, new_rand, shift_in_chance=0):
         self.rand = new_rand
         self._type_speed = None
         self.type_delay = None
         self.override_speed = 0
+
+        self.shift_in_chance = shift_in_chance
+        if self.shift_in_chance < 0: shift_in_chance = 0
+        if self.shift_in_chance > 100: shift_in_chance = 100
+
         self.reset()
 
     @property
@@ -44,6 +52,11 @@ class Printer(object):
         self.type_delay = ((60.0/self.type_speed)/60.0)
 
     def reset(self):
+        if self.shift_in_chance and self.rand.int(1, 100) <= self.shift_in_chance:
+            print self.SHIFT_IN
+        else:
+            print self.SHIFT_OUT
+
         self.override_speed = 0
         self.type_speed = self.TYPE_SPEED_DEFAULT
         self.action = ACTION.DEFAULT
