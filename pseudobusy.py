@@ -14,6 +14,7 @@ class PseudoBusy():
     MIN_FILE_LENGTH = 1
     MAX_FILE_LENGTH = 5000
     MAX_FILE_SIZE = 100000000 # 100 MB
+    MAX_CHARS_PER_LINE = 1000 # avoids heavily compressed files
 
     def __init__(self, args=None):
         self.args = args
@@ -79,6 +80,7 @@ class PseudoBusy():
                     ins.readline().decode('ascii')  # for catching junk we don't care to see
                     num_lines = sum(1 for _ in ins) + 1
 
+                if size / num_lines >= self.MAX_CHARS_PER_LINE: raise Exception('Too many characters per line')
                 if num_lines <= self.MIN_FILE_LENGTH: raise Exception('Too few lines') # for empty and single line files
                 if num_lines >= self.MAX_FILE_LENGTH: raise Exception('Too many lines') # for massive files (probably not code)
             except Exception, err:
