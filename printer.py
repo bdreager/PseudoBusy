@@ -74,7 +74,8 @@ class Printer(object):
         self.random_color = self.pick_color()
         self.alpha_color = self.pick_color()
 
-    def typing(self, string):
+    def write(self, string, speed=None):
+        if speed: self.override_speed = speed
         for char in string:
             color = self.determine_color(char)
             sys.stdout.write('%s%s' % (color, char))
