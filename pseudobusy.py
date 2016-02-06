@@ -24,6 +24,7 @@ class PseudoBusy():
         self.running = False
 
     def start(self):
+        print self.printer.CLEAR
         self.running = True
         self.printer.write('Generating file list... ', speed=1)
         # TODO whitelist and blacklist
@@ -37,11 +38,11 @@ class PseudoBusy():
         while self.running:
             try:
                 self.printer.reset()
-                infile, num_lines = self.pick_file()
+                infile, num_lines, size = self.pick_file()
 
                 if self.args.typing_speed: self.printer.override_speed = self.args.typing_speed
                 self.log(1, "Reading: "+infile.replace(self.target_dir, '') if self.hide_target else infile)
-                self.log(2, "\nLines:{}, Rejects:{}\n".format(num_lines,self.original_num_files - len(self.files)))
+                self.log(2, "\nBytes:{}, Lines:{}, Rejects:{}\n".format(size,num_lines,self.original_num_files - len(self.files)))
                 self.print_file(infile)
             except KeyboardInterrupt:
                 self.running = False
@@ -67,11 +68,12 @@ class PseudoBusy():
             self.log(3, str(err)+'\n')
 
     def pick_file(self, index=None):
-        file = num_lines =  None
+        file = num_lines = size =  None
         while not file:
             try:
                 file = self.files[index] if index else self.rand.choice(self.files)
-                if os.path.getsize(file) >= self.MAX_FILE_SIZE: raise  Exception('File too large')
+                size = os.path.getsize(file)
+                if size >= self.MAX_FILE_SIZE: raise  Exception('File too large')
                 if not os.access(file, os.R_OK): raise Exception('No read access')
                 with open(file, 'r') as ins:
                     ins.readline().decode('ascii')  # for catching junk we don't care to see
@@ -84,7 +86,7 @@ class PseudoBusy():
                 self.files.remove(file) # we don't need to see rejects again
                 file = None
 
-        return (file, num_lines)
+        return (file, num_lines, size)
 
     def log(self, level, string):
         if (level <= self.args.verbose): self.printer.write(string)
@@ -102,9 +104,6 @@ def init_args():
 if __name__ == '__main__':
     args = init_args()
     try:
-        print Printer.CLEAR
         PseudoBusy(args=args).start()
-    except:# Exception, e:
-        print Printer.CLEAR + Printer.RESET + Printer.CLEAR
-        #print e
-        pass
+    except: pass
+    finally: print Printer.CLEAR + Printer.RESET
