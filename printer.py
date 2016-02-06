@@ -35,8 +35,8 @@ class Printer(object):
         self.override_speed = 0
 
         self.shift_in_chance = shift_in_chance
-        if self.shift_in_chance < 0: shift_in_chance = 0
-        if self.shift_in_chance > 100: shift_in_chance = 100
+        if self.shift_in_chance < 0: self.shift_in_chance = 0
+        if self.shift_in_chance > 100: self.shift_in_chance = 100
 
         self.reset()
 
