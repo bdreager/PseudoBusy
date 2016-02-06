@@ -11,7 +11,7 @@ classifiers = [
     'Operating System :: MacOS :: MacOS X',
     'Operating System :: POSIX :: Linux',
     'Programming Language :: Python :: 2.7',
-    #'Programming Language :: Python :: 3', # TODO needs testing
+    'Programming Language :: Python :: 3',
     'Topic :: Utilities',
     'Topic :: Terminals',
     'Topic :: Artistic Software'

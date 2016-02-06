@@ -25,7 +25,7 @@ class PseudoBusy():
         self.running = False
 
     def start(self):
-        print self.printer.CLEAR
+        print (self.printer.CLEAR)
         self.running = True
         self.printer.write('Generating file list... ', speed=1)
         # TODO whitelist and blacklist
@@ -65,7 +65,7 @@ class PseudoBusy():
                         self.printer.write(self.rand.string(num))
                         self.printer.backspace_delete(num)
                     self.printer.write(line)
-        except Exception, err:
+        except (Exception) as err:
             self.log(3, str(err)+'\n')
 
     def pick_file(self, index=None):
@@ -83,7 +83,7 @@ class PseudoBusy():
                 if size / num_lines >= self.MAX_CHARS_PER_LINE: raise Exception('Too many characters per line')
                 if num_lines <= self.MIN_FILE_LENGTH: raise Exception('Too few lines') # for empty and single line files
                 if num_lines >= self.MAX_FILE_LENGTH: raise Exception('Too many lines') # for massive files (probably not code)
-            except Exception, err:
+            except (Exception) as err:
                 self.log(3, str(err)+'\n')
                 self.files.remove(file) # we don't need to see rejects again
                 file = None
@@ -108,4 +108,4 @@ if __name__ == '__main__':
     try:
         PseudoBusy(args=args).start()
     except: pass
-    finally: print Printer.CLEAR + Printer.RESET
+    finally: print (Printer.CLEAR + Printer.RESET)

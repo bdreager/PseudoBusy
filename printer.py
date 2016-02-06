@@ -59,9 +59,9 @@ class Printer(object):
 
     def reset(self):
         if self.shift_in_chance and self.rand.int(1, 100) <= self.shift_in_chance:
-            print self.SHIFT_IN
+            print (self.SHIFT_IN)
         else:
-            print self.SHIFT_OUT
+            print (self.SHIFT_OUT)
 
         self.override_speed = 0
         self.type_speed = self.TYPE_SPEED_DEFAULT
