@@ -28,6 +28,9 @@ class Printer(object):
     SHIFT_IN = "\016"
     SHIFT_OUT = "\017"
 
+    SPECIAL_CHARS = ['@', '?', '&', '|', '%', '!', ':', '\\']
+    MATH_CHARS = ['+', '=', '>', '<', '.', '/', '*']
+
     def __init__(self, shift_in_chance=0):
         self.rand = Random()
         self._type_speed = None
@@ -149,21 +152,14 @@ class Printer(object):
                 return self.random_color
             return self.main_color
 
-    @staticmethod
-    def determine_type(char):
+    def determine_type(self, char):
         # TODO Detect curly brackets,
-        if char.isalpha() or char == "-" or char == "_":
-            return TYPE.ALPHA
-        elif char == '\"': # or char == '\'': //can't use single quote until I can detect apostrophe
-            return TYPE.QUOTE
-        elif char.isdigit():
-            return TYPE.DIGIT
-        elif char == '+' or char == '=' or char == '>' or char == '<' or char == '.' or char == '/' or char == '*':
-            return TYPE.MATH
-        elif char == '?' or char == '&' or char == '|' or char == '%' or char == '!' or char == ':' or char == '\\':
-            return TYPE.SPECIAL
-        else:
-            return TYPE.UNDEFINED
+        if char.isalpha() or char == "-" or char == "_": return TYPE.ALPHA
+        elif char == '\"':                               return TYPE.QUOTE
+        elif char.isdigit():                             return TYPE.DIGIT
+        elif char in self.MATH_CHARS:                    return TYPE.MATH
+        elif char in self.SPECIAL_CHARS:                 return TYPE.SPECIAL
+        else:                                            return TYPE.UNDEFINED
 
 class Random(random.Random):
     def __init__(self):
