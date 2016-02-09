@@ -116,9 +116,13 @@ def init_args():
                         help='finds all rejects before starting', dest='reject_first')
     return parser.parse_args()
 
-if __name__ == '__main__':
-    args = init_args()
+args = init_args()
+
+def main():
     try:
         PseudoBusy(args=args).start()
     except: pass
     finally: print (Printer.CLEAR + Printer.RESET)
+
+if __name__ == '__main__': main()
+

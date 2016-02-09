@@ -1,6 +1,8 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
-from distutils.core import setup
+try: from setuptools import setup
+except ImportError: from distutils.core import setup
 
 script_name = 'pseudobusy.py'
 classifiers = [
@@ -25,8 +27,6 @@ with open(script_name) as f:
         if old in meta:
             meta[new] = meta[old]
             del meta[old]
-
-    # keep these
     meta_keys = ['name', 'description', 'version', 'license', 'url', 'author', 'author_email']
     meta = dict([m for m in meta.items() if m[0] in meta_keys])
 
@@ -36,6 +36,7 @@ setup_d = dict(
     scripts=[script_name],
     keywords=keywords,
     packages=[''],
+    entry_points={'console_scripts': ['pseudobusy=pseudobusy:main']},
     **meta
 )
 
