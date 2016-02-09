@@ -4,6 +4,11 @@
 __program__ = 'PseudoBusy'
 __version__ = '1.0.0'
 __description__ = 'Terminal vomit'
+__author__ = 'Brandon Dreager'
+__author_email__ ='pseudobusy@subol.es'
+__copyright__ = 'Copyright (c) 2016 Brandon Dreager'
+__license__ = 'MIT'
+__website__ = 'https://github.com/Regaerd/PseudoBusy'
 
 import os
 from printer import Printer, Random
@@ -31,20 +36,26 @@ class PseudoBusy():
         # TODO whitelist and blacklist
         self.files = [os.path.join(path, filename) for path, dirs, files in os.walk(self.target_dir) for filename in files]
         self.original_num_files = len(self.files)
-
         self.printer.write('Found {} files'.format(self.original_num_files))
+
+        if self.args.reject_first:
+            self.printer.write('\nChecking all files... ', speed=1)
+            for i in xrange(self.original_num_files - 1, -1, -1):
+                self.pick_file(i)
+            self.printer.write('Rejected {} files'.format(self.original_num_files - len(self.files)))
+
         self.run()
 
     def run(self):
         while self.running:
             try:
                 self.printer.reset()
-                infile, num_lines, size = self.pick_file()
+                file, num_lines, size = self.pick_file()
 
                 if self.args.typing_speed: self.printer.override_speed = self.args.typing_speed
-                self.log(1, "Reading: "+infile.replace(self.target_dir, '') if self.hide_target else infile)
+                self.log(1, "Reading: "+file.replace(self.target_dir, '') if self.hide_target else file)
                 self.log(2, "\nBytes:{}, Lines:{}, Rejects:{}\n".format(size,num_lines,self.original_num_files - len(self.files)))
-                self.print_file(infile)
+                self.print_file(file)
             except KeyboardInterrupt:
                 self.running = False
 
@@ -87,6 +98,7 @@ class PseudoBusy():
                 self.log(3, str(err)+'\n')
                 self.files.remove(file) # we don't need to see rejects again
                 file = None
+                if index: break
 
         return (file, num_lines, size)
 
@@ -100,7 +112,8 @@ def init_args():
                         help='set verbose output level (default: %(default)s)', dest='verbose')
     parser.add_argument('-s', '--typing-speed-override', type=float, default=0,
                         help='overrides typing speed', dest='typing_speed')
-
+    parser.add_argument('-r', '--reject-first', action='store_true', default=False,
+                        help='finds all rejects before starting', dest='reject_first')
     return parser.parse_args()
 
 if __name__ == '__main__':
