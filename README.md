@@ -15,11 +15,10 @@ python setup.py install
 ```
 python pseudobusy.py
 ```
-or
+If installed:
 ```
-pseudobusy.py
+pseudobusy
 ```
-if installed
 
 ###Stop
 <kbd>ctrl</kbd> + <kbd>c</kbd>
@@ -32,6 +31,7 @@ Options | Descriptions
 `--version`      | show current version
 `-v` or `--verbose` | print debug info (0-3) (default: 1)
 `-s` or `--typing-speed-override` | overrides the default typing speed
+`-r` or `--reject-first` | checks/rejects invalid files before starting
 
 ###Extras
 If running in a tmux session, there is a 25% chance each time a file is read that an alternate character set will be used.
