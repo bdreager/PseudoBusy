@@ -61,21 +61,23 @@ class PseudoBusy():
 
     def print_file(self, infile):
         try:
-            with open(infile, "r") as ins:
-                patience = self.MAX_PATIENCE
-                for line in ins:
-                    line = line.decode('ascii')  # hides garbage
-                    if line.strip():
-                        patience = self.MAX_PATIENCE
-                    else:
-                        patience -= 1
-                        if patience <= 0:
-                            break;
-                    if not self.rand.int(0, 10):  # type a random string as a 'mistake'
-                        num = self.rand.int(10, 25)
-                        self.printer.write(self.rand.string(num))
-                        self.printer.backspace_delete(num)
-                    self.printer.write(line)
+            with open(infile) as file:
+                lines = file.readlines()
+
+            patience = self.MAX_PATIENCE
+            for line in lines:
+                line = line.decode('ascii')  # hides garbage
+                if line.strip():
+                    patience = self.MAX_PATIENCE
+                else:
+                    patience -= 1
+                    if patience <= 0:
+                        break;
+                if not self.rand.int(0, 10):  # type a random string as a 'mistake'
+                    num = self.rand.int(10, 25)
+                    self.printer.write(self.rand.string(num))
+                    self.printer.backspace_delete(num)
+                self.printer.write(line)
         except (Exception) as err:
             self.log(3, str(err)+'\n')
 
