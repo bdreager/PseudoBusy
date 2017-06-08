@@ -1,17 +1,17 @@
 # PseudoBusy
 
-###What
+### What
 PseudoBusy is a script to make your terminal look busy.
 It finds random interesting files on your computer and prints them out letter by letter, with varying speed, IDE-like highlighting, and random mistakes.
 
 Works nicely as a noninvasive, nonintensive, screen saver.
 
-###Install
+### Install
 ```
 python setup.py install
 ```
 
-###Run
+### Run
 ```
 python pseudobusy.py
 ```
@@ -20,10 +20,10 @@ If installed:
 pseudobusy
 ```
 
-###Stop
+### Stop
 <kbd>ctrl</kbd> + <kbd>c</kbd>
 
-###Command-line options
+### Command-line options
 
 Options | Descriptions
 ------- | ------------
@@ -33,10 +33,10 @@ Options | Descriptions
 `-s` or `--typing-speed-override` | overrides the default typing speed
 `-r` or `--reject-first` | checks/rejects invalid files before starting
 
-###Extras
+### Extras
 If running in a tmux session, there is a 25% chance each time a file is read that an alternate character set will be used.
 
-###Issues
+### Issues
 
 - [x] Works on Linux completely
 
